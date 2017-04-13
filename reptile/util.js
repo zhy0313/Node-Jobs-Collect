@@ -1,22 +1,31 @@
-var CODE = {
-  success: '000',
-  parseError: '101'
+var INFO = {
+  success: {
+    code: '000',
+    msg: 'ok'
+  },
+  parseError: {
+    code: '101',
+    msg: '解析过程报错...'
+  },
+  notParser: {
+    code: '102',
+    msg: '没有解析该地址的解析器'
+  }
 }
 module.exports = {
   // 格式化返回数据
   successData: function (data) {
     return {
-      code: CODE.success,
+      code: INFO.success.code,
       msg: `解析出数据${data.length}条`,
       data: data
     }
   },
-  parseErrorData: function (data) {
-    return {
-      code: CODE.parseError,
-      msg: `解析出数据${data.length}条`,
-      data: data
-    }
+  parseErrorData: function () {
+    return INFO.parseError
+  },
+  notParser: function () {
+    return INFO.notParser
   },
   /**
    * 对各个采集网站的参数做差异化处理

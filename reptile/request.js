@@ -1,6 +1,13 @@
-var superagent = require('superagent')
+var iconv = require('iconv-lite')
+var request = require('request')
+var objectAssign = require('object-assign')
 
-var userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
+
+var headers = {
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+  'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4',
+  'Cookie': '_ga=GA1.2.311229505.1489152662'
+}
 
 /**
  * 抓取页面HTMl数据
@@ -17,20 +24,25 @@ function get() {
 }
 
 /**
- * 获取HTML
+ * 抓去HTML页面内容
  * @param {any} url 
+ * @param {any} params 
+ * @param {any} callback 
  */
-function _get(url, params, callback) {
-  url = `${url}${generatorParam(params)}`
-
-  superagent.get(url)
-    .set('User-Agent', userAgent)
-    .end(function (err, res) {
-      if (err) return err.stack
-      callback(null, res.text)
-    })
-
+function _get(options, params, callback) {
+  options.url = `${options.url}${generatorParam(params)}`
+  defaultOptions = {
+    headers: headers,
+    encoding: null  // 关键代码
+  }
+  options = objectAssign(defaultOptions, options)
+  request(options, function (err, sres, body) {
+    debugger
+    var html = iconv.decode(body, options.chatset || 'utf-8')
+    callback(null, html)
+  });
 }
+
 /**
  * {name:'zhongxia',age:18} 对象变成 name=zhongxia&age=18 格式的
  * @param {any} params 
